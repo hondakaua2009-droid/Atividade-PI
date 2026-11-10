@@ -263,6 +263,43 @@ const styles = StyleSheet.create({
     color: '#17452F',
     fontWeight: 'bold',
   },
+    telaAuth: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 25,
+    backgroundColor: '#F1F8F4',
+  },
+
+  tituloAuth: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#17452F',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+
+  subtituloAuth: {
+    fontSize: 14,
+    color: '#718078',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+
+  linkAuth: {
+    color: '#23865B',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginTop: 15,
+    padding: 10,
+  },
+
+  botaoSair: {
+    backgroundColor: '#D9534F',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 25,
+  },
 });
 
 export default styles;
