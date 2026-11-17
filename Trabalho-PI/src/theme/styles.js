@@ -1,305 +1,101 @@
+
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F1F8F4',
-  },
+export const cores = {
+  verde: '#16A34A',
+  verdeEscuro: '#166534',
+  verdeClaro: '#DCFCE7',
+  verdeSuave: '#F0FDF4',
 
-  areaConteudo: {
-    flex: 1,
-  },
+  branco: '#FFFFFF',
+
+  texto: '#14301F',
+  textoSuave: '#5B7A66',
+
+  borda: '#D1E7D8',
+  erro: '#DC2626',
+};
+
+export const espaco = {
+  p: 8,
+  m: 16,
+  g: 24,
+};
+
+export const estilos = StyleSheet.create({
 
   tela: {
     flex: 1,
-    padding: 20,
+    backgroundColor: cores.verdeSuave,
   },
 
-  saude: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: '#17452F',
-    marginTop: 20,
+  conteudo: {
+    padding: espaco.m,
+    paddingBottom: 40,
+  },
+
+  centro: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: cores.verde,
+  },
+
+  // Textos
+  titulo: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: cores.verdeEscuro,
   },
 
   subtitulo: {
     fontSize: 14,
-    color: '#718078',
-    marginTop: 8,
-    marginBottom: 20,
+    color: cores.textoSuave,
+    marginTop: 2,
   },
 
-  tituloPagina: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#17452F',
-    marginTop: 15,
-    marginBottom: 15,
-  },
-
-  tituloSecao: {
-    fontSize: 19,
-    fontWeight: 'bold',
-    color: '#17452F',
-    marginTop: 20,
-    marginBottom: 12,
-  },
-
-  linhaTitulo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
-  contador: {
-    color: '#43AD80',
-    fontWeight: 'bold',
-  },
-
-  cardProva: {
-    backgroundColor: '#17452F',
-    borderRadius: 18,
-    padding: 20,
-    marginVertical: 15,
-  },
-
-  textoProva: {
-    color: '#BDE8D0',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-
-  tituloProva: {
-    color: '#FFFFFF',
-    fontSize: 23,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-
-  detalheProva: {
-    color: '#FFFFFF',
-    marginTop: 8,
-  },
-
-  diasProva: {
-    color: '#BDE8D0',
-    marginTop: 12,
-    fontWeight: 'bold',
-  },
-
-  cardTarefa: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    padding: 15,
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    elevation: 2,
-  },
-
-  checkTarefa: {
-    width: 25,
-    height: 25,
-    borderWidth: 2,
-    borderColor: '#43AD80',
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  checkAtivo: {
-    backgroundColor: '#43AD80',
-  },
-
-  checkTexto: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-  },
-
-  infoTarefa: {
-    marginLeft: 12,
-    flex: 1,
-  },
-
-  tituloTarefa: {
-    color: '#17452F',
-    fontSize: 15,
-    fontWeight: 'bold',
-  },
-
-  tarefaConcluida: {
-    textDecorationLine: 'line-through',
-    color: '#9AA69F',
-  },
-
-  textoSecundario: {
-    color: '#718078',
-    fontSize: 13,
-    marginTop: 5,
-  },
-
-  botao: {
-    backgroundColor: '#43AD80',
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginVertical: 15,
-  },
-
-  textoBotao: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-
-  label: {
-    color: '#17452F',
-    fontWeight: 'bold',
-    marginBottom: 7,
-    marginTop: 12,
-  },
-
-  input: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#DCE9E1',
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 15,
-  },
-
-  cardCalendario: {
-    backgroundColor: '#FFFFFF',
-    padding: 17,
-    borderRadius: 14,
-    marginBottom: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: '#43AD80',
-  },
-
-  avatar: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#43AD80',
-    borderRadius: 50,
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-
-  letraAvatar: {
-    fontSize: 40,
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-  },
-
-  nomePerfil: {
-    textAlign: 'center',
-    fontSize: 22,
-    color: '#17452F',
-    fontWeight: 'bold',
-    marginTop: 15,
-  },
-
-  cardPerfil: {
-    backgroundColor: '#FFFFFF',
-    padding: 20,
-    borderRadius: 14,
-    marginTop: 15,
-    alignItems: 'center',
-  },
-
-  numeroPerfil: {
-    color: '#43AD80',
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-
-  menuInferior: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#E4EEE8',
-    justifyContent: 'space-around',
-  },
-
-  itemMenu: {
-    alignItems: 'center',
-    flex: 1,
-  },
-
-  iconeMenu: {
-    fontSize: 22,
-    color: '#9AA69F',
-  },
-
-  textoMenu: {
-    fontSize: 11,
-    color: '#9AA69F',
-    marginTop: 4,
-  },
-
-  menuAtivo: {
-    color: '#43AD80',
-    fontWeight: 'bold',
-  },
-
-  splash: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  imagemSplash: {
-    width: '100%',
-    height: '75%',
-  },
-
-  textoSplash: {
-    fontSize: 22,
-    color: '#17452F',
-    fontWeight: 'bold',
-  },
-    telaAuth: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 25,
-    backgroundColor: '#F1F8F4',
-  },
-
-  tituloAuth: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#17452F',
-    textAlign: 'center',
+  secao: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: cores.texto,
+    marginTop: 22,
     marginBottom: 10,
   },
 
-  subtituloAuth: {
-    fontSize: 14,
-    color: '#718078',
-    textAlign: 'center',
-    marginBottom: 30,
-  },
-
-  linkAuth: {
-    color: '#23865B',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    marginTop: 15,
-    padding: 10,
-  },
-
-  botaoSair: {
-    backgroundColor: '#D9534F',
-    padding: 16,
+  // Campos de entrada
+  input: {
+    backgroundColor: cores.branco,
+    borderWidth: 1,
+    borderColor: cores.borda,
     borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 25,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: cores.texto,
+    marginBottom: 12,
   },
-});
 
-export default styles;
+  // Cartões
+  card: {
+    backgroundColor: cores.branco,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: cores.borda,
+    marginBottom: 10,
+  },
+
+  // Mensagens
+  vazio: {
+    color: cores.textoSuave,
+    textAlign: 'center',
+    paddingVertical: 16,
+  },
+
+  erro: {
+    color: cores.erro,
+    marginBottom: 10,
+    fontSize: 13,
+  },
+
+});

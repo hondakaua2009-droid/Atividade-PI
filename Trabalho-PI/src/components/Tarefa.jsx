@@ -1,34 +1,37 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import styles from '../theme/styles';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { cores } from '../theme/styles';
 
-export default function Tarefa({ tarefa, onConcluir }) {
+export default function Tarefa({ item, onToggle, onRemove }) {
   return (
-    <View style={styles.cardTarefa}>
-      <TouchableOpacity
-        style={[
-          styles.checkTarefa,
-          tarefa.concluida && styles.checkAtivo,
-        ]}
-        onPress={onConcluir}
-      >
-        <Text style={styles.checkTexto}>
-          {tarefa.concluida ? '✓' : ''}
-        </Text>
+    <View style={s.linha}>
+      <TouchableOpacity onPress={() => onToggle(item)} style={s.check}>
+        <Ionicons
+          name={item.concluida ? 'checkmark-circle' : 'ellipse-outline'}
+          size={26}
+          color={cores.verde}
+        />
       </TouchableOpacity>
-
-      <View style={styles.infoTarefa}>
-        <Text style={[
-          styles.tituloTarefa,
-          tarefa.concluida && styles.tarefaConcluida,
-        ]}>
-          {tarefa.titulo}
-        </Text>
-
-        <Text style={styles.textoSecundario}>
-          {tarefa.materia} • {tarefa.horario}
-        </Text>
-      </View>
+      <Text style={[s.titulo, item.concluida && s.feita]} numberOfLines={2}>
+        {item.titulo}
+      </Text>
+      {onRemove && (
+        <TouchableOpacity onPress={() => onRemove(item)} hitSlop={10}>
+          <Ionicons name="trash-outline" size={20} color={cores.textoSuave} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
+
+const s = StyleSheet.create({
+  linha: {
+    flexDirection: 'row', alignItems: 'center', backgroundColor: cores.branco,
+    borderRadius: 14, borderWidth: 1, borderColor: cores.borda,
+    padding: 12, marginBottom: 8,
+  },
+  check: { marginRight: 10 },
+  titulo: { flex: 1, fontSize: 15, color: cores.texto },
+  feita: { textDecorationLine: 'line-through', color: cores.textoSuave },
+});

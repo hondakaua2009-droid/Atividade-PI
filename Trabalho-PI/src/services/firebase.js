@@ -1,35 +1,31 @@
-import { initializeApp } from 'firebase/app';
-
-import {
-  initializeAuth,
-  getAuth,
-  getReactNativePersistence,
-} from 'firebase/auth';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+// src/services/firebase.js
+import { Platform } from 'react-native';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'SUA_API_KEY',
-  authDomain: 'eduagenda-9e777.firebaseapp.com',
-  projectId: 'eduagenda-9e777',
-  storageBucket: 'eduagenda-9e777.firebasestorage.app',
-  messagingSenderId: '756216166637',
-  appId: '1:756216166637:web:37d6967e50cd8629634e4',
+  apiKey: 'AIzaSyA8CL2DVTxq6ZhrbjNMbQHYyy_w0di35Mw',
+  authDomain: 'agendaedu-a4475.firebaseapp.com',
+  projectId: 'agendaedu-a4475',
+  storageBucket: 'agendaedu-a4475.firebasestorage.app',
+  messagingSenderId: '202527471065',
+  appId: '1:202527471065:web:775628025ac472361ad5c8',
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
-let auth;
+function criarAuth() {
+  if (Platform.OS === 'web') return getAuth(app);
 
-try {
-  auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
-} catch {
-  auth = getAuth(app);
+  const { initializeAuth, getReactNativePersistence } = require('firebase/auth');
+  const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+  try {
+    return initializeAuth(app, { persistence: getReactNativePersistence(AsyncStorage) });
+  } catch (e) {
+    return getAuth(app);
+  }
 }
 
-export { auth };
+export const auth = criarAuth();
 export const db = getFirestore(app);
