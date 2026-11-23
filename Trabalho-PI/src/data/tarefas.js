@@ -1,43 +1,126 @@
-import {
-  collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot,
-  query, orderBy, serverTimestamp,
-} from 'firebase/firestore';
-import { db } from '../services/firebase';
+// Tarefas e provas ficam salvas no aparelho (AsyncStorage), separadas por usuário.
+// O Firebase é usado apenas para login e perfil.
 
-const tarefasRef = (uid) => collection(db, 'users', uid, 'tarefas');
-const provasRef = (uid) => collection(db, 'users', uid, 'provas');
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const ouvintes = {};
+
+const chave = (uid, tipo) => `@pi:${uid}:${tipo}`;
+
+const novoId = () =>
+  `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+async function ler(uid, tipo) {
+  try {
+    const bruto = await AsyncStorage.getItem(chave(uid, tipo));
+    return bruto ? JSON.parse(bruto) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+async function gravar(uid, tipo, lista) {
+  await AsyncStorage.setItem(chave(uid, tipo), JSON.stringify(lista));
+
+  const k = chave(uid, tipo);
+
+  if (ouvintes[k]) {
+    ouvintes[k].forEach((cb) => cb(lista));
+  }
+}
+
+function ouvir(uid, tipo, callback) {
+  const k = chave(uid, tipo);
+
+  if (!ouvintes[k]) ouvintes[k] = new Set();
+
+  ouvintes[k].add(callback);
+
+  let ativo = true;
+
+  ler(uid, tipo).then((lista) => {
+    if (ativo) callback(lista);
+  });
+
+  return () => {
+    ativo = false;
+    ouvintes[k].delete(callback);
+  };
+}
 
 // ---------- TAREFAS ----------
-export function ouvirTarefas(uid, callback, onError) {
-  const q = query(tarefasRef(uid), orderBy('criadaEm', 'desc'));
-  return onSnapshot(
-    q,
-    (snap) => callback(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
-    onError
+
+export const ouvirTarefas = (uid, callback) =>
+  ouvir(uid, 'tarefas', callback);
+
+export async function adicionarTarefa(uid, titulo) {
+  const lista = await ler(uid, 'tarefas');
+
+  await gravar(uid, 'tarefas', [
+    {
+      id: novoId(),
+      titulo,
+      concluida: false,
+      criadaEm: Date.now(),
+    },
+    ...lista,
+  ]);
+}
+
+export async function alternarTarefa(uid, id, concluida) {
+  const lista = await ler(uid, 'tarefas');
+
+  await gravar(
+    uid,
+    'tarefas',
+    lista.map((t) =>
+      t.id === id ? { ...t, concluida } : t
+    )
   );
 }
 
-export const adicionarTarefa = (uid, titulo) =>
-  addDoc(tarefasRef(uid), { titulo, concluida: false, criadaEm: serverTimestamp() });
+export async function removerTarefa(uid, id) {
+  const lista = await ler(uid, 'tarefas');
 
-export const alternarTarefa = (uid, id, concluida) =>
-  updateDoc(doc(db, 'users', uid, 'tarefas', id), { concluida });
-
-export const removerTarefa = (uid, id) =>
-  deleteDoc(doc(db, 'users', uid, 'tarefas', id));
+  await gravar(
+    uid,
+    'tarefas',
+    lista.filter((t) => t.id !== id)
+  );
+}
 
 // ---------- PROVAS ----------
-export function ouvirProvas(uid, callback, onError) {
-  const q = query(provasRef(uid), orderBy('data', 'asc'));
-  return onSnapshot(
-    q,
-    (snap) => callback(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
-    onError
+
+export const ouvirProvas = (uid, callback) =>
+  ouvir(uid, 'provas', (lista) =>
+    callback(
+      [...lista].sort((a, b) =>
+        a.data.localeCompare(b.data)
+      )
+    )
   );
+
+export async function adicionarProva(uid, { materia, titulo, data }) {
+  const lista = await ler(uid, 'provas');
+
+  await gravar(uid, 'provas', [
+    ...lista,
+    {
+      id: novoId(),
+      materia,
+      titulo,
+      data,
+      criadaEm: Date.now(),
+    },
+  ]);
 }
 
-export const adicionarProva = (uid, { materia, titulo, data }) =>
-  addDoc(provasRef(uid), { materia, titulo, data, criadaEm: serverTimestamp() });
+export async function removerProva(uid, id) {
+  const lista = await ler(uid, 'provas');
 
-export const removerProva = (uid, id) =>
-  deleteDoc(doc(db, 'users', uid, 'provas', id));
+  await gravar(
+    uid,
+    'provas',
+    lista.filter((p) => p.id !== id)
+  );
+}
