@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -16,8 +17,33 @@ import {
 } from '../data/tarefas';
 
 import Tarefa from '../components/Tarefa';
-import CardProva, { diasRestantes } from '../components/CardProva';
+import CardProva from '../components/CardProva';
 import { cores, estilos, sombra } from '../theme/styles';
+
+// Calcula quantos dias faltam para uma prova
+function diasRestantes(data) {
+  if (!data) return -1;
+
+  const partes = data.split('-');
+
+  if (partes.length !== 3) return -1;
+
+  const prova = Date.UTC(
+    Number(partes[0]),
+    Number(partes[1]) - 1,
+    Number(partes[2])
+  );
+
+  const agora = new Date();
+
+  const hoje = Date.UTC(
+    agora.getFullYear(),
+    agora.getMonth(),
+    agora.getDate()
+  );
+
+  return Math.round((prova - hoje) / (1000 * 60 * 60 * 24));
+}
 
 export default function Home() {
   const user = auth.currentUser;
@@ -26,6 +52,8 @@ export default function Home() {
   const [provas, setProvas] = useState([]);
 
   useEffect(() => {
+    if (!user) return;
+
     const u1 = ouvirTarefas(user.uid, setTarefas);
     const u2 = ouvirProvas(user.uid, setProvas);
 
@@ -33,24 +61,37 @@ export default function Home() {
       u1();
       u2();
     };
-  }, [user.uid]);
+  }, [user?.uid]);
 
-  const pendentes = tarefas.filter((t) => !t.concluida);
+  const pendentes = tarefas.filter(
+    (t) => !t.concluida
+  );
 
   const proximas = provas
     .filter((p) => diasRestantes(p.data) >= 0)
+    .sort((a, b) => a.data.localeCompare(b.data))
     .slice(0, 3);
 
-  const primeiroNome = (user.displayName || 'estudante').split(' ')[0];
+  const primeiroNome = (
+    user?.displayName || 'estudante'
+  ).split(' ')[0];
 
   return (
     <SafeAreaView
       edges={['top']}
-      style={{ flex: 1, backgroundColor: cores.verde }}
+      style={{
+        flex: 1,
+        backgroundColor: cores.verde
+      }}
     >
       <ScrollView
-        style={{ flex: 1, backgroundColor: cores.verdeSuave }}
-        contentContainerStyle={{ paddingBottom: 30 }}
+        style={{
+          flex: 1,
+          backgroundColor: cores.verdeSuave
+        }}
+        contentContainerStyle={{
+          paddingBottom: 30
+        }}
       >
         <View style={estilos.hero}>
           <Text style={estilos.heroTitulo}>
@@ -64,18 +105,30 @@ export default function Home() {
 
         <View style={s.resumo}>
           <View style={s.box}>
-            <Text style={s.num}>{pendentes.length}</Text>
-            <Text style={s.rot}>tarefas pendentes</Text>
+            <Text style={s.num}>
+              {pendentes.length}
+            </Text>
+
+            <Text style={s.rot}>
+              tarefas pendentes
+            </Text>
           </View>
 
           <View style={s.box}>
-            <Text style={s.num}>{proximas.length}</Text>
-            <Text style={s.rot}>próximas provas</Text>
+            <Text style={s.num}>
+              {proximas.length}
+            </Text>
+
+            <Text style={s.rot}>
+              próximas provas
+            </Text>
           </View>
         </View>
 
         <View style={{ paddingHorizontal: 16 }}>
-          <Text style={estilos.secao}>Próximas provas</Text>
+          <Text style={estilos.secao}>
+            Próximas provas
+          </Text>
 
           {proximas.length === 0 ? (
             <Text style={estilos.vazio}>
@@ -83,7 +136,10 @@ export default function Home() {
             </Text>
           ) : (
             proximas.map((p) => (
-              <CardProva key={p.id} prova={p} />
+              <CardProva
+                key={p.id}
+                prova={p}
+              />
             ))
           )}
 
@@ -101,7 +157,11 @@ export default function Home() {
                 key={t.id}
                 item={t}
                 onToggle={(i) =>
-                  alternarTarefa(user.uid, i.id, !i.concluida)
+                  alternarTarefa(
+                    user.uid,
+                    i.id,
+                    !i.concluida
+                  )
                 }
               />
             ))
@@ -119,6 +179,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 16,
     marginTop: -26,
   },
+
   box: {
     flex: 1,
     backgroundColor: cores.branco,
@@ -126,11 +187,13 @@ const s = StyleSheet.create({
     padding: 18,
     ...sombra,
   },
+
   num: {
     color: cores.verde,
     fontSize: 34,
     fontWeight: '800',
   },
+
   rot: {
     color: cores.textoSuave,
     fontSize: 13,

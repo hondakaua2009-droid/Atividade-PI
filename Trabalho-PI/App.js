@@ -1,20 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
-
-import { View, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
-import {
-  NavigationContainer
-} from '@react-navigation/native';
-
-import {
-  createNativeStackNavigator
-} from '@react-navigation/native-stack';
-
-import {
-  createBottomTabNavigator
-} from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import {
   SafeAreaProvider,
@@ -22,10 +13,9 @@ import {
 } from 'react-native-safe-area-context';
 
 import { Ionicons } from '@expo/vector-icons';
-
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './src/services/firebase';
 
+import { auth } from './src/services/firebase';
 import { cores } from './src/theme/styles';
 
 import SplashScreen from './src/screens/SplashScreen';
@@ -50,9 +40,7 @@ function Abas() {
   const insets = useSafeAreaInsets();
 
   const espacoInferior =
-    Platform.OS === 'web'
-      ? 8
-      : insets.bottom;
+    Platform.OS === 'web' ? 8 : insets.bottom;
 
   return (
     <Tab.Navigator
@@ -126,12 +114,21 @@ function Navegacao() {
   const [user, setUser] = useState(null);
   const [authPronto, setAuthPronto] = useState(false);
   const [tempoSplash, setTempoSplash] = useState(false);
+  const [erroAuth, setErroAuth] = useState('');
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (usuario) => {
-      setUser(usuario);
-      setAuthPronto(true);
-    });
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (usuario) => {
+        setUser(usuario);
+        setAuthPronto(true);
+      },
+      (erro) => {
+        console.error('Erro na autenticação:', erro);
+        setErroAuth(erro.message);
+        setAuthPronto(true);
+      }
+    );
 
     const timer = setTimeout(() => {
       setTempoSplash(true);
@@ -147,15 +144,41 @@ function Navegacao() {
     return <SplashScreen />;
   }
 
+  if (erroAuth) {
+    return (
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 25,
+        backgroundColor: cores.verdeSuave
+      }}>
+        <Text style={{
+          color: cores.texto,
+          fontSize: 18,
+          fontWeight: 'bold'
+        }}>
+          Erro ao carregar o aplicativo
+        </Text>
+
+        <Text style={{
+          color: cores.textoSuave,
+          marginTop: 10,
+          textAlign: 'center'
+        }}>
+          {erroAuth}
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <>
       <StatusBar style="dark" />
 
       <NavigationContainer>
         <Stack.Navigator
-          screenOptions={{
-            headerShown: false
-          }}
+          screenOptions={{ headerShown: false }}
         >
           {user ? (
             <Stack.Screen

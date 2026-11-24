@@ -1,37 +1,92 @@
+
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet
+} from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
 import { cores } from '../theme/styles';
 
 export default function Tarefa({ item, onToggle, onRemove }) {
+
+  // Evita erro caso nenhuma tarefa seja recebida
+  if (!item) {
+    return null;
+  }
+
   return (
     <View style={s.linha}>
-      <TouchableOpacity onPress={() => onToggle(item)} style={s.check}>
+
+      <TouchableOpacity
+        onPress={() => onToggle?.(item)}
+        style={s.check}
+      >
         <Ionicons
-          name={item.concluida ? 'checkmark-circle' : 'ellipse-outline'}
+          name={
+            item.concluida
+              ? 'checkmark-circle'
+              : 'ellipse-outline'
+          }
           size={26}
           color={cores.verde}
         />
       </TouchableOpacity>
-      <Text style={[s.titulo, item.concluida && s.feita]} numberOfLines={2}>
+
+      <Text
+        style={[
+          s.titulo,
+          item.concluida && s.feita
+        ]}
+        numberOfLines={2}
+      >
         {item.titulo}
       </Text>
+
       {onRemove && (
-        <TouchableOpacity onPress={() => onRemove(item)} hitSlop={10}>
-          <Ionicons name="trash-outline" size={20} color={cores.textoSuave} />
+        <TouchableOpacity
+          onPress={() => onRemove(item)}
+          hitSlop={10}
+        >
+          <Ionicons
+            name="trash-outline"
+            size={20}
+            color={cores.textoSuave}
+          />
         </TouchableOpacity>
       )}
+
     </View>
   );
 }
 
 const s = StyleSheet.create({
   linha: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: cores.branco,
-    borderRadius: 14, borderWidth: 1, borderColor: cores.borda,
-    padding: 12, marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: cores.branco,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: cores.borda,
+    padding: 12,
+    marginBottom: 8
   },
-  check: { marginRight: 10 },
-  titulo: { flex: 1, fontSize: 15, color: cores.texto },
-  feita: { textDecorationLine: 'line-through', color: cores.textoSuave },
+
+  check: {
+    marginRight: 10
+  },
+
+  titulo: {
+    flex: 1,
+    fontSize: 15,
+    color: cores.texto
+  },
+
+  feita: {
+    textDecorationLine: 'line-through',
+    color: cores.textoSuave
+  }
 });
